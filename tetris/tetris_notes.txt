@@ -1,0 +1,80 @@
+@project_title  My_Tetris
+@author         zjr
+@date           12/21/14
+
+TODO:
+* Fix window collisions
+    * S-0:
+        * Right side misses 1
+        * Left side misses 2
+    * L-0:
+        * Left side misses 1 and 2
+    * T-0: 
+        * Left side misses 0 1 2
+        * Right side missed 0 2 3
+    * j-0 & 3
+        * 2 or 3
+** Fix falling through the bottom if you hold DOWN a bunch during the descent
+* Fix block collisions (or make the more reliable
+* Clean up the codez
+* Add sound
+* Add a background image (that changes with level?)
+
+
+Goal(s): 
+    * Learn the basic framework of game programming, using javafx. 
+    * Implement tetris in javafx (more detailed design notes below)
+
+Stuff to think about:
+    * Game world (...like jpanel? extends javafx.
+        * Some fields: String windowTitle, int fps
+        * Scene (specific to javafx..like jpanel?)
+            * initalize() a scene
+            * loop through it
+        * Gameloop (Timeline in javafx)
+            * Takes an FPS as a Duration object
+    * Sprite manager
+        * Knows about all the sprites (ie. can list them, iterate through them)
+        * Handles group activities
+    * Sprites
+        * Handles individuals behaviors 
+            * such as velocity, pictures, location, etc
+    * Eventhandlers are anonymous classes
+
+public static void main(String[] args){
+    Application.launch(args); 
+}
+
+So basically GameWorld does and manages everything (its the big ol main) and then you break down into smaller and smaller managers
+    and finally the smallest are objects in the game themselves or properties of those objects
+
+For tetris specifically:
+
+Gameworld: 
+    * Is just a panel with a title "My Tetris", about twice as tall as it is wide
+    * An initial scene is a blank panel as described ^
+    * One frame:
+        * updateSprites
+            * if (initial scene || noBlock) then new (randomly shaped) block is created at top of panel
+            * else (ie there is a block) do move block down at game speed (which gets faster as you go longer) 
+        * checkCollision
+            * if (after the move above) the block is lying on a deadblock or the floor (ie is within (height of block + 1) yPixel of them), kill it makeDead()
+            * else no collion?
+        * cleanUpSprites
+            * if dead blocks form a new floor (ie the minimum height of the floor + deadblocks is uniformly >= min. height of block) remove a layer until that is not true
+
+Sprite manager:
+    * has an enum of possible block formations
+    * has a list of current dead blocks
+        * can transform deadblocks (sometimes a chunk has to break off of them)
+    * has a current live block
+
+Sprites:
+    * formations of blocks (should they start out in formations? or start out as blocks and be arranged into formations?)
+    * have an X and Y position (that is initially (.5) * width of the panel and 0
+    * always move() south (+yPixel)_in a frame unless at the bottom.
+    * can move() with eventHandler(S) -- override handle(ActionEvent e) on 
+        * different classes(handlers) for different events (ie block.SetOnKeyPressed(new EventHandler<KeyEvent>(){@override handle(...)...});
+
+
+
